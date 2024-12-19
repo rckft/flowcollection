@@ -4,10 +4,6 @@ import java.util.Collection;
 
 public interface MyCollection<T> {
 
-    // podstawowe operacje z .md
-    // addAll
-    // oprawcje wspomagające
-
     boolean add(T element);
 
     boolean remove(T element);

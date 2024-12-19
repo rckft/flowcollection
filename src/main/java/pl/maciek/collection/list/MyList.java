@@ -2,10 +2,9 @@ package pl.maciek.collection.list;
 
 import pl.maciek.collection.MyCollection;
 
-public interface MyList<T> extends MyCollection<T> {
+import java.util.Arrays;
 
-    // operacje podstawowe
-    // 3. of (modyfikowalna)
+public interface MyList<T> extends MyCollection<T> {
 
     boolean add(int index, T element);
 
@@ -20,8 +19,8 @@ public interface MyList<T> extends MyCollection<T> {
     int lastIndexOf(T element);
 
     static <T> MyList<T> of(T... elements) {
-        return null;
-
-
+        var list = new MyArrayList<>();
+        list.addAll(Arrays.asList(elements));
+        return (MyList<T>) list;
     };
 }
