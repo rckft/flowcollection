@@ -18,7 +18,7 @@ class MyArrayListTest {
         myArrayList.add("a");
 
         //then
-        assertEquals(myArrayList.get(0), "a");
+        assertEquals(myArrayList.get(0), "b");
     }
 
     @Test
@@ -33,7 +33,7 @@ class MyArrayListTest {
         myArrayList.add("d");
 
         //then
-        assertEquals("d", myArrayList.get(3));
+        assertEquals("de", myArrayList.get(3));
         assertEquals(4, myArrayList.size());
     }
 
