@@ -14,7 +14,7 @@ public interface MyMap<K, V> {
     int size();
     boolean isEmpty();
     boolean containsKey(K key);
-    boolean containsValue(K value);
+    boolean containsValue(V value);
     V get(K key);
     V put(K key, V value);
     V remove(K key);
