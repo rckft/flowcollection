@@ -1,6 +1,8 @@
 package pl.maciek.collection.list;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MyArrayList<T> implements MyList<T> {
 
@@ -16,6 +18,21 @@ public class MyArrayList<T> implements MyList<T> {
 
     public MyArrayList(int capacity) {
         data = (T[]) new Object[capacity];
+    }
+
+    private class MyArrayListIterator implements Iterator<T> {
+        int index = 0;
+
+        @Override
+        public boolean hasNext() {
+            return index < size;
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            return data[index++];
+        }
     }
 
     @Override
@@ -129,6 +146,11 @@ public class MyArrayList<T> implements MyList<T> {
         T[] newDataArray = (T[]) new Object[DEFAULT_INIT_SIZE];
         data = newDataArray;
         size = 0;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new MyArrayListIterator();
     }
 
     private void resize() {

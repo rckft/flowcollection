@@ -1,6 +1,8 @@
 package pl.maciek.collection.list;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.function.Consumer;
 
 public class MyImmutableArrayList<T> implements MyList<T> {
 
@@ -83,5 +85,10 @@ public class MyImmutableArrayList<T> implements MyList<T> {
             }
         }
         return -1;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return null;
     }
 }

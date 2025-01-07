@@ -3,7 +3,9 @@ package pl.maciek.collection.list;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -870,4 +872,74 @@ class MyArrayListTest {
         //then
         assertEquals(2, myArrayList.lastIndexOf("a"));
     }
+
+    @Test
+    void shouldReturnIterator() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+
+        //when
+        Iterator<String> iterator = myArrayList.iterator();
+
+        //then
+        assertNotNull(iterator);
+    }
+
+    @Test
+    void shouldReturnTrue_whenNextElementExist() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        Iterator<String> iterator = myArrayList.iterator();
+
+        //then
+        assertTrue(iterator.hasNext());
+    }
+
+    @Test
+    void shouldReturnFalse_whenNextElementNotExist() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+
+        //when
+        Iterator<String> iterator = myArrayList.iterator();
+
+        //then
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    void shouldReturnNextElement() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+        Iterator<String> iterator = myArrayList.iterator();
+
+        //then
+        assertEquals("a", iterator.next());
+        assertEquals("b", iterator.next());
+        assertEquals("c", iterator.next());
+    }
+
+    @Test
+    void shouldThrowException_whenNextElementNotExist() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        Iterator<String> iterator = myArrayList.iterator();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+
+        //when
+        iterator.next();
+        iterator.next();
+        iterator.next();
+
+        //then
+        assertThrows(NoSuchElementException.class, () -> iterator.next());
+    }
+
+
 }

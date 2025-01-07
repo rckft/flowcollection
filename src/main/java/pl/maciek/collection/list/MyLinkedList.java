@@ -1,12 +1,35 @@
 package pl.maciek.collection.list;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MyLinkedList<T> implements MyList<T> {
 
     private Node head;
     private Node tail;
     private int size;
+
+    private class MyLinkedListIterator implements Iterator<T> {
+        Node pointer;
+
+        MyLinkedListIterator() {
+            this.pointer = head;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return pointer != null;
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) throw new NoSuchElementException();
+            T value = pointer.value;
+            pointer = pointer.next;
+            return value;
+        }
+    }
 
     private class Node {
         T value;
@@ -154,6 +177,11 @@ public class MyLinkedList<T> implements MyList<T> {
         head = null;
         tail = null;
         size = 0;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new MyLinkedListIterator();
     }
 
     private Node getNode(int index) {
