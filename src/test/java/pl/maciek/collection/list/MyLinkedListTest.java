@@ -2,10 +2,7 @@ package pl.maciek.collection.list;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -926,4 +923,132 @@ class MyLinkedListTest {
         //then
         assertThrows(NoSuchElementException.class, () -> iterator.next());
     }
+
+    @Test
+    void iteratorShouldNotThrowException_whenListIsNotModified() {
+        //given
+        var myLinkedList = new MyLinkedList<String>();
+        myLinkedList.add("a");
+        myLinkedList.add("b");
+        myLinkedList.add("c");
+
+        //when
+        var iterator = myLinkedList.iterator();
+
+        //then
+        assertDoesNotThrow(() -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsAdded() {
+        //given
+        var myLinkedList = new MyLinkedList<String>();
+        myLinkedList.add("a");
+        myLinkedList.add("b");
+        myLinkedList.add("c");
+
+        //when
+        var iterator = myLinkedList.iterator();
+        myLinkedList.add("d");
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsRemoved() {
+        //given
+        var myLinkedList = new MyLinkedList<String>();
+        myLinkedList.add("a");
+        myLinkedList.add("b");
+        myLinkedList.add("c");
+
+        //when
+        var iterator = myLinkedList.iterator();
+        myLinkedList.remove("c");
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsAddedAtIndex() {
+        //given
+        var myLinkedList = new MyLinkedList<String>();
+        myLinkedList.add("a");
+        myLinkedList.add("b");
+        myLinkedList.add("c");
+
+        //when
+        var iterator = myLinkedList.iterator();
+        myLinkedList.add(1, "d");
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsRemovedAtIndex() {
+        //given
+        var myLinkedList = new MyLinkedList<String>();
+        myLinkedList.add("a");
+        myLinkedList.add("b");
+        myLinkedList.add("c");
+
+        //when
+        var iterator = myLinkedList.iterator();
+        myLinkedList.remove(1);
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsSet() {
+        //given
+        var myLinkedList = new MyLinkedList<String>();
+        myLinkedList.add("a");
+        myLinkedList.add("b");
+        myLinkedList.add("c");
+
+        //when
+        var iterator = myLinkedList.iterator();
+        myLinkedList.set(1, "d");
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementsAreAdded() {
+        //given
+        var myLinkedList = new MyLinkedList<String>();
+        myLinkedList.add("a");
+        myLinkedList.add("b");
+        myLinkedList.add("c");
+
+        //when
+        var iterator = myLinkedList.iterator();
+        myLinkedList.addAll(List.of("d"));
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenListIsCleared() {
+        //given
+        var myLinkedList = new MyLinkedList<String>();
+        myLinkedList.add("a");
+        myLinkedList.add("b");
+        myLinkedList.add("c");
+
+        //when
+        var iterator = myLinkedList.iterator();
+        myLinkedList.clear();
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
 }

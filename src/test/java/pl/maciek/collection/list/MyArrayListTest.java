@@ -2,10 +2,7 @@ package pl.maciek.collection.list;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -927,10 +924,10 @@ class MyArrayListTest {
     void shouldThrowException_whenNextElementNotExist() {
         //given
         var myArrayList = new MyArrayList<String>();
-        Iterator<String> iterator = myArrayList.iterator();
         myArrayList.add("a");
         myArrayList.add("b");
         myArrayList.add("c");
+        Iterator<String> iterator = myArrayList.iterator();
 
         //when
         iterator.next();
@@ -940,6 +937,134 @@ class MyArrayListTest {
         //then
         assertThrows(NoSuchElementException.class, () -> iterator.next());
     }
+
+    @Test
+    void iteratorShouldNotThrowException_whenListIsNotModified() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+
+        //when
+        var iterator = myArrayList.iterator();
+
+        //then
+        assertDoesNotThrow(() -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsAdded() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+
+        //when
+        var iterator = myArrayList.iterator();
+        myArrayList.add("d");
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsRemoved() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+
+        //when
+        var iterator = myArrayList.iterator();
+        myArrayList.remove("c");
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsAddedAtIndex() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+
+        //when
+        var iterator = myArrayList.iterator();
+        myArrayList.add(1, "d");
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsRemovedAtIndex() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+
+        //when
+        var iterator = myArrayList.iterator();
+        myArrayList.remove(1);
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementIsSet() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+
+        //when
+        var iterator = myArrayList.iterator();
+        myArrayList.set(1, "d");
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenElementsAreAdded() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+
+        //when
+        var iterator = myArrayList.iterator();
+        myArrayList.addAll(List.of("d"));
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
+    @Test
+    void iteratorShouldThrowException_whenListIsCleared() {
+        //given
+        var myArrayList = new MyArrayList<String>();
+        myArrayList.add("a");
+        myArrayList.add("b");
+        myArrayList.add("c");
+
+        //when
+        var iterator = myArrayList.iterator();
+        myArrayList.clear();
+
+        //then
+        assertThrows(ConcurrentModificationException.class, () -> iterator.next());
+    }
+
 
 
 }
