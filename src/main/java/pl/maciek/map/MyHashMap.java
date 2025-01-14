@@ -4,6 +4,7 @@ import pl.maciek.collection.MyCollection;
 import pl.maciek.collection.list.MyArrayList;
 import pl.maciek.collection.list.MyList;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 public class MyHashMap<K, V> implements MyMap<K, V> {
@@ -52,7 +53,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         if (size() == 0) return false;
         for (var head: buckets) {
             for (var node = head; node != null; node = node.next) {
-                if (node.value == value) return true;
+                if (Objects.equals(node.value, value)) return true;
             }
         }
         return false;
@@ -69,11 +70,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     @Override
     public V put(K key, V value) {
         if (loadFactor() > LOAD_FACTOR_THRESHOLD) {
-            try {
-                rehash();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            rehash();
         }
 
         int bucketIndex = bucket(key);
@@ -89,7 +86,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         }
 
         for (var node = head; ;node = node.next) {
-            if (node.key == key) {
+            if (Objects.equals(node.key, key)) {
                 V oldValue = node.value;
                 node.value = value;
                 return oldValue;
@@ -110,7 +107,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         var head = buckets[index];
         if (head == null) return null;
 
-        if (head.key == key) {
+        if (Objects.equals(head.key, key)) {
             buckets[index] = head.next;
             size--;
             return head.value;
@@ -118,7 +115,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
 
         for (var node = head; node.next != null; node = node.next) {
             var nextNode = node.next;
-            if (nextNode.key == key) {
+            if (Objects.equals(nextNode.key, key)) {
                 V value = nextNode.value;
                 node.next = nextNode.next;
                 size--;
@@ -156,7 +153,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
 
     private Entry<K, V> getEntryWithKey(K key) {
         for (var node = buckets[bucket(key)]; node != null; node = node.next) {
-            if (node.key == key) return node;
+            if (Objects.equals(node.key, key)) return node;
         }
         return null;
     }
@@ -173,7 +170,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
 
     private void rehash() {
         var entrySet = entrySet();
-        buckets = new Node[size * REHASH_FACTOR];
+        buckets = new Node[buckets.length * REHASH_FACTOR];
         size = 0;
         for (int i = 0; i < entrySet.size(); i++) {
             var entry = entrySet.get(i);

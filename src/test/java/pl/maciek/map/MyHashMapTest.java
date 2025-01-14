@@ -347,6 +347,21 @@ public class MyHashMapTest {
         assertEquals(9, map.size());
     }
 
+    @Test
+    void shouldReturnCorrectValue_whenKeysAreStringObjects() {
+        //given
+        var map = new MyHashMap<String, String>();
+        String key1 = new String("key");
+        String key2 = new String("key");
+
+        //when
+        map.put(key1, "Value1");
+        map.put(key2, "Value2");
+
+        //then
+        assertEquals("Value2", map.get("key"));
+    }
+
     
     /*
      * | Key    | hashCode | Bucket                 |
