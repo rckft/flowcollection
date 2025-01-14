@@ -949,6 +949,7 @@ class MyLinkedListTest {
 
         //when
         var iterator = myLinkedList.iterator();
+        iterator.next();
         myLinkedList.add("d");
 
         //then
@@ -965,6 +966,7 @@ class MyLinkedListTest {
 
         //when
         var iterator = myLinkedList.iterator();
+        iterator.next();
         myLinkedList.remove("c");
 
         //then
@@ -981,6 +983,7 @@ class MyLinkedListTest {
 
         //when
         var iterator = myLinkedList.iterator();
+        iterator.next();
         myLinkedList.add(1, "d");
 
         //then
@@ -997,6 +1000,7 @@ class MyLinkedListTest {
 
         //when
         var iterator = myLinkedList.iterator();
+        iterator.next();
         myLinkedList.remove(1);
 
         //then
@@ -1013,6 +1017,7 @@ class MyLinkedListTest {
 
         //when
         var iterator = myLinkedList.iterator();
+        iterator.next();
         myLinkedList.set(1, "d");
 
         //then
@@ -1029,6 +1034,7 @@ class MyLinkedListTest {
 
         //when
         var iterator = myLinkedList.iterator();
+        iterator.next();
         myLinkedList.addAll(List.of("d"));
 
         //then
@@ -1045,6 +1051,7 @@ class MyLinkedListTest {
 
         //when
         var iterator = myLinkedList.iterator();
+        iterator.next();
         myLinkedList.clear();
 
         //then

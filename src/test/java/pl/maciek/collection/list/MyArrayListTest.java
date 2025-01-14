@@ -963,6 +963,7 @@ class MyArrayListTest {
 
         //when
         var iterator = myArrayList.iterator();
+        iterator.next();
         myArrayList.add("d");
 
         //then
@@ -979,6 +980,7 @@ class MyArrayListTest {
 
         //when
         var iterator = myArrayList.iterator();
+        iterator.next();
         myArrayList.remove("c");
 
         //then
@@ -995,6 +997,7 @@ class MyArrayListTest {
 
         //when
         var iterator = myArrayList.iterator();
+        iterator.next();
         myArrayList.add(1, "d");
 
         //then
@@ -1011,6 +1014,7 @@ class MyArrayListTest {
 
         //when
         var iterator = myArrayList.iterator();
+        iterator.next();
         myArrayList.remove(1);
 
         //then
@@ -1027,6 +1031,7 @@ class MyArrayListTest {
 
         //when
         var iterator = myArrayList.iterator();
+        iterator.next();
         myArrayList.set(1, "d");
 
         //then
@@ -1043,6 +1048,7 @@ class MyArrayListTest {
 
         //when
         var iterator = myArrayList.iterator();
+        iterator.next();
         myArrayList.addAll(List.of("d"));
 
         //then
@@ -1059,6 +1065,7 @@ class MyArrayListTest {
 
         //when
         var iterator = myArrayList.iterator();
+        iterator.next();
         myArrayList.clear();
 
         //then

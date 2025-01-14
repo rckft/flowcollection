@@ -172,7 +172,6 @@ public class MyLinkedList<T> implements MyList<T> {
         for (T element : collection) {
             add(element);
         }
-        modCount++;
         return true;
     }
 
