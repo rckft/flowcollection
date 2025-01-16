@@ -4,11 +4,14 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Fork {
 
-    private int id;
+    private final int id;
+    private final int priority;
+
     private final ReentrantLock lock = new ReentrantLock();
 
-    public Fork(int id) {
+    public Fork(int id, int priority) {
         this.id = id;
+        this.priority = priority;
     }
 
     public void pickUp(String side) {
@@ -21,4 +24,7 @@ public class Fork {
         System.out.println("Fork " + id + " " + " is put down");
     }
 
+    public int getPriority() {
+        return priority;
+    }
 }

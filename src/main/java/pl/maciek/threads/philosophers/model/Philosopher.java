@@ -1,16 +1,18 @@
 package pl.maciek.threads.philosophers.model;
 
+import java.util.stream.Stream;
+
+import static java.util.Comparator.*;
+
 public class Philosopher extends Thread {
 
-    private final String LEFT = "left";
-    private final String RIGHT = "right";
+    private static final String LEFT = "left";
+    private static final String RIGHT = "right";
 
-    private int id;
-    private Fork leftFork;
-    private Fork rightFork;
+    private final Fork leftFork;
+    private final Fork rightFork;
 
-    public Philosopher(int id, Fork leftFork, Fork rightFork) {
-        this.id = id;
+    public Philosopher(Fork leftFork, Fork rightFork) {
         this.leftFork = leftFork;
         this.rightFork = rightFork;
     }
@@ -20,9 +22,10 @@ public class Philosopher extends Thread {
     }
 
     private void pickUpForks() throws InterruptedException {
-        leftFork.pickUp(LEFT);
+        var forks = Stream.of(leftFork, rightFork).sorted(comparingInt(Fork::getPriority)).toList();
+        forks.get(0).pickUp(LEFT);
         Thread.sleep(10);
-        rightFork.pickUp(RIGHT);
+        forks.get(1).pickUp(RIGHT);
     }
 
     private void eat() throws InterruptedException {
