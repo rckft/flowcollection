@@ -1,6 +1,9 @@
 package pl.maciek.collection.list;
 
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MyArrayList<T> implements MyList<T> {
 
@@ -9,6 +12,7 @@ public class MyArrayList<T> implements MyList<T> {
 
     private T[] data;
     private int size = 0;
+    private int modCount = 0;
 
     public MyArrayList() {
         data = (T[]) new Object[DEFAULT_INIT_SIZE];
@@ -16,6 +20,23 @@ public class MyArrayList<T> implements MyList<T> {
 
     public MyArrayList(int capacity) {
         data = (T[]) new Object[capacity];
+    }
+
+    private class MyArrayListIterator implements Iterator<T> {
+        private int index = 0;
+        private final int expectedModCount = modCount;
+
+        @Override
+        public boolean hasNext() {
+            return index < size;
+        }
+
+        @Override
+        public T next() {
+            if (expectedModCount != modCount) throw new ConcurrentModificationException();
+            if (!hasNext()) throw new NoSuchElementException();
+            return data[index++];
+        }
     }
 
     @Override
@@ -29,6 +50,7 @@ public class MyArrayList<T> implements MyList<T> {
         }
         data[index] = element;
         size++;
+        modCount++;
         return true;
     }
 
@@ -41,6 +63,7 @@ public class MyArrayList<T> implements MyList<T> {
         }
         data[size] = null;
         size--;
+        modCount++;
         return true;
     }
 
@@ -54,6 +77,7 @@ public class MyArrayList<T> implements MyList<T> {
     public void set(int index, T element) {
         checkIfIndexIsInBounds(index);
         data[index] = element;
+        modCount++;
     }
 
     @Override
@@ -82,6 +106,7 @@ public class MyArrayList<T> implements MyList<T> {
             resize();
         }
         data[size++] = element;
+        modCount++;
         return true;
     }
 
@@ -116,6 +141,7 @@ public class MyArrayList<T> implements MyList<T> {
         for (var element: collection) {
             data[size++] = element;
         }
+        modCount++;
         return true;
     }
 
@@ -129,6 +155,12 @@ public class MyArrayList<T> implements MyList<T> {
         T[] newDataArray = (T[]) new Object[DEFAULT_INIT_SIZE];
         data = newDataArray;
         size = 0;
+        modCount++;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new MyArrayListIterator();
     }
 
     private void resize() {
