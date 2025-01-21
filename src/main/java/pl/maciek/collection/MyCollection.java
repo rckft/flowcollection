@@ -2,7 +2,7 @@ package pl.maciek.collection;
 
 import java.util.Collection;
 
-public interface MyCollection<T> {
+public interface MyCollection<T> extends Iterable<T> {
 
     boolean add(T element);
 

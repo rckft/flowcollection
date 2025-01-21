@@ -1,12 +1,39 @@
 package pl.maciek.collection.list;
 
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class MyLinkedList<T> implements MyList<T> {
 
     private Node head;
     private Node tail;
     private int size;
+    private int modCount;
+
+    private class MyLinkedListIterator implements Iterator<T> {
+        private Node pointer;
+        private final int expectedModCount = modCount;
+
+        MyLinkedListIterator() {
+            this.pointer = head;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return pointer != null;
+        }
+
+        @Override
+        public T next() {
+            if (expectedModCount != modCount) throw new ConcurrentModificationException();
+            if (!hasNext()) throw new NoSuchElementException();
+            T value = pointer.value;
+            pointer = pointer.next;
+            return value;
+        }
+    }
 
     private class Node {
         T value;
@@ -34,6 +61,7 @@ public class MyLinkedList<T> implements MyList<T> {
         }
         tail = newNode;
         size++;
+        modCount++;
         return true;
     }
 
@@ -55,6 +83,7 @@ public class MyLinkedList<T> implements MyList<T> {
         }
 
         size++;
+        modCount++;
         return true;
     }
 
@@ -77,6 +106,7 @@ public class MyLinkedList<T> implements MyList<T> {
             previousNode.appendNode(nextNode);
         }
         size--;
+        modCount++;
         return true;
     }
 
@@ -89,6 +119,7 @@ public class MyLinkedList<T> implements MyList<T> {
     public void set(int index, T element) {
         checkIfIndexIsInBounds(index);
         getNode(index).value = element;
+        modCount++;
     }
 
     @Override
@@ -154,6 +185,12 @@ public class MyLinkedList<T> implements MyList<T> {
         head = null;
         tail = null;
         size = 0;
+        modCount++;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new MyLinkedListIterator();
     }
 
     private Node getNode(int index) {
