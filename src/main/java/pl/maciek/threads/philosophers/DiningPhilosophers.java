@@ -15,15 +15,23 @@ public class DiningPhilosophers {
         Fork fork5 = new Fork(5, 5);
 
         var philosophers = List.of(
-                new Philosopher(fork1, fork2),
-                new Philosopher(fork2, fork3),
-                new Philosopher(fork3, fork4),
-                new Philosopher(fork4, fork5),
-                new Philosopher(fork5, fork1)
+                new Philosopher(1, fork1, fork2),
+                new Philosopher(2, fork2, fork3),
+                new Philosopher(3, fork3, fork4),
+                new Philosopher(4, fork4, fork5),
+                new Philosopher(5, fork5, fork1)
         );
 
         for (Philosopher philosopher : philosophers) {
             philosopher.start();
+        }
+
+        while (true) {
+            Thread.sleep(5000);
+            for (Philosopher philosopher : philosophers) {
+                System.out.println("Philosopher " + philosopher.getPhilosopherId() + " was dining " + philosopher.getDiningCount() + " times");
+            }
+            System.out.println();
         }
 
     }

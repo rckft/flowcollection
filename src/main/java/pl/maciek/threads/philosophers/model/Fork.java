@@ -16,12 +16,12 @@ public class Fork {
 
     public void pickUp(String side) {
         lock.lock();
-        System.out.println("Fork " + id + " " + "is picked up as " + side);
+//        System.out.println("Fork " + id + " " + "is picked up as " + side);
     }
 
     public void putDown() {
         lock.unlock();
-        System.out.println("Fork " + id + " " + " is put down");
+//        System.out.println("Fork " + id + " " + " is put down");
     }
 
     public int getPriority() {
