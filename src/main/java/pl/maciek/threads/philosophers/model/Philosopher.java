@@ -1,20 +1,29 @@
 package pl.maciek.threads.philosophers.model;
 
-import java.util.stream.Stream;
-
-import static java.util.Comparator.*;
-
 public class Philosopher extends Thread {
 
     private static final String LEFT = "left";
     private static final String RIGHT = "right";
 
-    private final Fork leftFork;
-    private final Fork rightFork;
+    private final ForkWithHand higherPriorityFork;
+    private final ForkWithHand lowerPriorityFork;
+
+    private record ForkWithHand(Fork fork, String hand) {
+        public void pickUp() {
+            fork.pickUp(hand);
+        }
+    }
 
     public Philosopher(Fork leftFork, Fork rightFork) {
-        this.leftFork = leftFork;
-        this.rightFork = rightFork;
+        var leftForkWithHand = new ForkWithHand(leftFork, LEFT);
+        var rightForkWithHand = new ForkWithHand(rightFork, RIGHT);
+        if (leftFork.getPriority() > rightFork.getPriority()) {
+            this.higherPriorityFork = leftForkWithHand;
+            this.lowerPriorityFork = rightForkWithHand;
+        } else {
+            this.higherPriorityFork = rightForkWithHand;
+            this.lowerPriorityFork = leftForkWithHand;
+        }
     }
 
     private void think() throws InterruptedException {
@@ -22,10 +31,9 @@ public class Philosopher extends Thread {
     }
 
     private void pickUpForks() throws InterruptedException {
-        var forks = Stream.of(leftFork, rightFork).sorted(comparingInt(Fork::getPriority)).toList();
-        forks.get(0).pickUp(LEFT);
+        higherPriorityFork.pickUp();
         Thread.sleep(10);
-        forks.get(1).pickUp(RIGHT);
+        lowerPriorityFork.pickUp();
     }
 
     private void eat() throws InterruptedException {
@@ -33,8 +41,8 @@ public class Philosopher extends Thread {
     }
 
     private void putDownForks() {
-        leftFork.putDown();
-        rightFork.putDown();
+        higherPriorityFork.fork.putDown();
+        lowerPriorityFork.fork.putDown();
     }
 
     @Override
