@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import pl.maciek.collection.list.MyList;
 
 import java.io.*;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -178,6 +179,73 @@ public class MyStreamTest {
         }
     }
 
+    @Test
+    void shouldReturnFirstElementOfStream() {
+        //given
+        var integers = MyList.of(1, 2, 3, 4, 5);
+        MyStream<Integer> stream = new MyStream<>(integers);
+
+        //when
+        var first = stream.findFirst();
+
+        //then
+        assertTrue(first.isPresent());
+        assertEquals(1, first.get());
+    }
+
+    @Test
+    void shouldReturnCorrectFirstElement_filteringGreaterThan10_andAdding5() {
+        //given
+        var integers = MyList.of(5, 8, 12, 15, 22);
+        MyStream<Integer> stream = new MyStream<>(integers);
+
+        //when
+        Optional<Integer> first = stream.filter(i -> i > 10).map(i -> i + 5).findFirst();
+
+        //then
+        assertTrue(first.isPresent());
+        assertEquals(17, first.get());
+    }
+
+    @Test
+    void shouldReturnCorrectFirstElement_sortingElements_andSkipping3Elements() {
+        //given
+        var names = MyList.of("Daniel", "Anna", "Bartek", "Cecylia", "Ela");
+        MyStream<String> stream = new MyStream<>(names);
+
+        //when
+        Optional<String> first = stream.sorted(String::compareTo).skip(3).findFirst();
+
+        //then
+        assertTrue(first.isPresent());
+        assertEquals("Daniel", first.get());
+    }
+
+    @Test
+    void shouldReturnCorrectCount_ofElementsGreaterThan50_afterAdding20() {
+        //given
+        var integers = MyList.of(10, 30, 40, 60, 80);
+        MyStream<Integer> stream = new MyStream<>(integers);
+
+        //when
+        var count = stream.map(i -> i + 20).filter(i -> i > 50).count();
+
+        //then
+        assertEquals(3, count);
+    }
+
+    @Test
+    void shouldReturnCorrectCount_ofUpperCaseElements_beginningWithA() {
+        //given
+        var names = MyList.of("Anna", "Agnieszka", "Bartek", "Cecylia", "Adam");
+        MyStream<String> stream = new MyStream<>(names);
+
+        //when
+        var count = stream.filter(s -> s.startsWith("A")).map(String::toUpperCase).count();
+
+        //then
+        assertEquals(3, count);
+    }
 
 
 

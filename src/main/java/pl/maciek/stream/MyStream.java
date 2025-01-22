@@ -3,8 +3,7 @@ package pl.maciek.stream;
 import pl.maciek.collection.list.MyArrayList;
 import pl.maciek.collection.list.MyList;
 
-import java.util.ArrayList;
-import java.util.function.Function;
+import java.util.Optional;
 
 public class MyStream<T> {
 
@@ -83,19 +82,31 @@ public class MyStream<T> {
             result.add(element);
         }
 
-        for (int j = elements.size() - 1; j > 0; j--) {
-            for (int i = 0; i < j; i++) {
-                var lhs = result.get(i);
-                var rhs = result.get(i + 1);
+        for (int i = elements.size() - 1; i > 0; i--) {
+            boolean noChange = true;
+            for (int j = 0; j < i; j++) {
+                var lhs = result.get(j);
+                var rhs = result.get(j + 1);
                 var compareResult = comparator.compare(lhs, rhs);
                 if (compareResult > 0) {
-                    result.set(i + 1, lhs);
-                    result.set(i, rhs);
+                    noChange = false;
+                    result.set(j + 1, lhs);
+                    result.set(j, rhs);
                 }
             }
+            if (noChange) break;
         }
 
         return new MyStream<>(result);
     }
+
+    public Optional<T> findFirst() {
+        if (!elements.isEmpty()) {
+            return Optional.of(elements.get(0));
+        } else {
+            return Optional.empty();
+        }
+    }
+
 
 }
