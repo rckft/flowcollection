@@ -78,23 +78,7 @@ public class MyStream<T> {
     public MyStream<T> sorted(MyComparator<T> comparator) {
         var result = new MyArrayList<T>();
         copyElements(result);
-
-        for (int i = elements.size() - 1; i > 0; i--) {
-            boolean noChange = true;
-            for (int j = 0; j < i; j++) {
-                var lhs = result.get(j);
-                var rhs = result.get(j + 1);
-                var compareResult = comparator.compare(lhs, rhs);
-                if (compareResult > 0) {
-                    noChange = false;
-                    result.set(j + 1, lhs);
-                    result.set(j, rhs);
-                }
-            }
-            if (noChange) break;
-        }
-
-        return new MyStream<>(result);
+        return new MyStream<>(mergeSort(result, comparator));
     }
 
     public Optional<T> findFirst() {
@@ -141,18 +125,6 @@ public class MyStream<T> {
         return findExtremum((a, b) -> comparator.compare(a, b) < 0);
     }
 
-    private Optional<T> findExtremum(MyBiFunction<T, T, Boolean> extremumComparator) {
-        if (elements.isEmpty()) return Optional.empty();
-        var extremum = elements.get(0);
-        for (int i = 1; i < elements.size(); i++) {
-            var currentElement = elements.get(i);
-            if (extremumComparator.apply(extremum, currentElement)) {
-                extremum = currentElement;
-            }
-        }
-        return Optional.of(extremum);
-    }
-
     public MyStream<T> peek(MyConsumer<T> action) {
         var result = new MyArrayList<T>(elements.size());
         copyElements(result);
@@ -181,10 +153,92 @@ public class MyStream<T> {
         return sb.toString();
     }
 
+    private Optional<T> findExtremum(MyBiFunction<T, T, Boolean> extremumComparator) {
+        if (elements.isEmpty()) return Optional.empty();
+        var extremum = elements.get(0);
+        for (int i = 1; i < elements.size(); i++) {
+            var currentElement = elements.get(i);
+            if (extremumComparator.apply(extremum, currentElement)) {
+                extremum = currentElement;
+            }
+        }
+        return Optional.of(extremum);
+    }
+
     private void copyElements(MyList<T> target) {
         for (var element: elements) {
             target.add(element);
         }
+    }
+
+    private MyList<T> bubbleSort(MyList<T> list, MyComparator<T> comparator) {
+        for (int i = elements.size() - 1; i > 0; i--) {
+            boolean noChange = true;
+            for (int j = 0; j < i; j++) {
+                var lhs = list.get(j);
+                var rhs = list.get(j + 1);
+                var compareResult = comparator.compare(lhs, rhs);
+                if (compareResult > 0) {
+                    noChange = false;
+                    list.set(j + 1, lhs);
+                    list.set(j, rhs);
+                }
+            }
+            if (noChange) break;
+        }
+        return list;
+    }
+
+    private MyList<T> mergeSort(MyList<T> list, MyComparator<T> comparator) {
+        if (list.size() < 2) {
+            return list;
+        }
+
+        int middleIndex = list.size() / 2;
+        MyList<T> leftPartSorted = mergeSort(split(list, 0, middleIndex), comparator);
+        MyList<T> rightPartSorted = mergeSort(split(list, middleIndex, list.size()), comparator);
+
+        var result = new MyArrayList<T>();
+
+        var i = 0;
+        var j = 0;
+
+        while (result.size() < list.size()) {
+
+            if (i == leftPartSorted.size()) {
+                while (j < rightPartSorted.size()) {
+                    result.add(rightPartSorted.get(j));
+                    j++;
+                }
+                break;
+            }
+
+            if (j == rightPartSorted.size()) {
+                while (i < leftPartSorted.size()) {
+                    result.add(leftPartSorted.get(i));
+                    i++;
+                }
+                break;
+            }
+
+            if (comparator.compare(leftPartSorted.get(i), rightPartSorted.get(j)) > 0) {
+                result.add(rightPartSorted.get(j));
+                j++;
+            } else {
+                result.add(leftPartSorted.get(i));
+                i++;
+            }
+        }
+
+        return result;
+    }
+
+    private MyList<T> split(MyList<T> target, int start, int end) {
+        var result = new MyArrayList<>();
+        for (int i = start; i < end; i++) {
+            result.add(target.get(i));
+        }
+        return (MyList<T>) result;
     }
 
 
