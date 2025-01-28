@@ -5,7 +5,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class MyLinkedList<T> implements MyList<T> {
+public class MyLinkedList<T> implements MyList<T>, MyDeque<T> {
 
     private Node head;
     private Node tail;
@@ -67,12 +67,21 @@ public class MyLinkedList<T> implements MyList<T> {
 
     @Override
     public boolean add(int index, T element) {
-        checkIfIndexIsInBounds(index);
+        if (index < 0 || index > size) throw new IndexOutOfBoundsException();
         var newNode = makeNode(element);
 
+        if (index == size) {
+            add(element);
+            return true;
+        }
+
         if (index == 0) {
-            head.prependNode(newNode);
-            head = newNode;
+            if (head == null) {
+                head = newNode;
+            } else {
+                head.prependNode(newNode);
+                head = newNode;
+            }
         }
 
         if (index > 0) {
@@ -89,7 +98,7 @@ public class MyLinkedList<T> implements MyList<T> {
 
     @Override
     public boolean remove(int index) {
-        checkIfIndexIsInBounds(index);
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
 
         if (index == 0) {
             head = head.next;
@@ -117,7 +126,7 @@ public class MyLinkedList<T> implements MyList<T> {
 
     @Override
     public void set(int index, T element) {
-        checkIfIndexIsInBounds(index);
+        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
         getNode(index).value = element;
         modCount++;
     }
@@ -189,6 +198,106 @@ public class MyLinkedList<T> implements MyList<T> {
     }
 
     @Override
+    public boolean offer(T e) {
+        addLast(e);
+        return true;
+    }
+
+    @Override
+    public T poll() {
+        if (isEmpty()) return null;
+        return pollFirst();
+    }
+
+    @Override
+    public T element() {
+        return getFirst();
+    }
+
+    @Override
+    public T peek() {
+        return peekFirst();
+    }
+
+    @Override
+    public T remove() {
+        if (isEmpty()) throw new NoSuchElementException();
+        return null;
+    }
+
+    @Override
+    public void addFirst(T e) {
+        offerFirst(e);
+    }
+
+    @Override
+    public void addLast(T e) {
+        offerLast(e);
+    }
+
+    @Override
+    public boolean offerFirst(T e) {
+        add(0, e);
+        return true;
+    }
+
+    @Override
+    public boolean offerLast(T e) {
+        add(size, e);
+        return true;
+    }
+
+    @Override
+    public T removeFirst() {
+        if (isEmpty()) throw new NoSuchElementException();
+        return pollFirst();
+    }
+
+    @Override
+    public T removeLast() {
+        if (isEmpty()) throw new NoSuchElementException();
+        return pollLast();
+    }
+
+    @Override
+    public T pollFirst() {
+        if (isEmpty()) return null;
+        var first = peekFirst();
+        remove(0);
+        return first;
+    }
+
+    @Override
+    public T pollLast() {
+        if (isEmpty()) return null;
+        var last = peekLast();
+        remove(size - 1);
+        return last;
+    }
+
+    @Override
+    public T getFirst() {
+        if (isEmpty()) throw new NoSuchElementException();
+        return peekFirst();
+    }
+
+    @Override
+    public T getLast() {
+        if (isEmpty()) throw new NoSuchElementException();
+        return peekLast();
+    }
+
+    @Override
+    public T peekFirst() {
+        return head == null ? null : head.value;
+    }
+
+    @Override
+    public T peekLast() {
+        return tail == null ? null : tail.value;
+    }
+
+    @Override
     public Iterator<T> iterator() {
         return new MyLinkedListIterator();
     }
@@ -205,10 +314,6 @@ public class MyLinkedList<T> implements MyList<T> {
         var node = new Node();
         node.value = element;
         return node;
-    }
-
-    private void checkIfIndexIsInBounds(int index) {
-        if (index < 0 || index >= size) throw new IndexOutOfBoundsException();
     }
 
 }

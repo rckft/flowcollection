@@ -555,7 +555,7 @@ class MyLinkedListTest {
     }
 
     @Test()
-    void shouldNotAddItemAndThrowException_whenIndexIsMoreThanListSize() {
+    void shouldNotAddItemAndThrowException_whenIndexIsMoreThanAppendingIndex() {
         //given
         var myLinkedList = new MyLinkedList<String>();
         myLinkedList.add("a");
@@ -563,7 +563,7 @@ class MyLinkedListTest {
         myLinkedList.add("c");
 
         //then
-        assertThrows(IndexOutOfBoundsException.class, () -> myLinkedList.add(3, "d"));
+        assertThrows(IndexOutOfBoundsException.class, () -> myLinkedList.add(4, "d"));
     }
 
     @Test
@@ -1058,4 +1058,382 @@ class MyLinkedListTest {
         assertThrows(ConcurrentModificationException.class, () -> iterator.next());
     }
 
+    @Test
+    void shouldOfferElementAtEndOfTheQueue() {
+        //given
+        MyQueue<String> myQueue = new MyLinkedList<>();
+
+        //when
+        var result = myQueue.offer("first");
+
+        //then
+        assertTrue(result);
+        assertEquals(1, myQueue.size());
+        assertEquals("first", myQueue.peek());
+    }
+
+    @Test
+    void shouldPollFirstElementOfTheQueue() {
+        //given
+        MyQueue<String> myQueue = new MyLinkedList<>();
+        myQueue.offer("first");
+        myQueue.offer("second");
+        myQueue.offer("third");
+
+        //when
+        String polled = myQueue.poll();
+
+        //then
+        assertEquals(2, myQueue.size());
+        assertEquals("first", polled);
+        assertEquals("second", myQueue.peek());
+    }
+
+    @Test
+    void shouldReturnNull_whenEmptyQueueIsPolled() {
+        //given
+        MyQueue<String> myQueue = new MyLinkedList<>();
+
+        //when
+        String polled = myQueue.poll();
+
+        //then
+        assertNull(polled);
+    }
+
+    @Test
+    void shouldRetrieveFirstElementOfTheQueue() {
+        //given
+        MyQueue<String> myQueue = new MyLinkedList<>();
+        myQueue.offer("first");
+        myQueue.offer("second");
+        myQueue.offer("third");
+
+        //when
+        String element = myQueue.element();
+
+        //then
+        assertEquals(3, myQueue.size());
+        assertEquals("first", element);
+        assertEquals("first", myQueue.peek());
+    }
+
+    @Test
+    void shouldThrowException_whenCallingElementOnEmptyQueue() {
+        //given
+        MyQueue<String> myQueue = new MyLinkedList<>();
+
+        //then
+        assertThrows(NoSuchElementException.class, myQueue::element);
+    }
+
+    @Test
+    void shouldPeekFirstElementOfTheQueue() {
+        //given
+        MyQueue<String> myQueue = new MyLinkedList<>();
+        myQueue.offer("first");
+        myQueue.offer("second");
+        myQueue.offer("third");
+
+        //when
+        String peeked = myQueue.element();
+
+        //then
+        assertEquals(3, myQueue.size());
+        assertEquals("first", peeked);
+    }
+
+    @Test
+    void shouldReturnNull_whenQueueIsPeeked() {
+        //given
+        MyQueue<String> myQueue = new MyLinkedList<>();
+
+        //when
+        String peeked = myQueue.peek();
+
+        //then
+        assertEquals(null, peeked);
+    }
+
+    @Test
+    void shouldAddElementAtStartOfTheDeque() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        myDeque.addFirst("d");
+
+        //then
+        assertEquals(4, myDeque.size());
+        assertEquals("d", myDeque.peekFirst());
+    }
+
+    @Test
+    void shouldAddElementAtEndOfTheDeque() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        myDeque.addLast("d");
+
+        //then
+        assertEquals(4, myDeque.size());
+        assertEquals("d", myDeque.peekLast());
+    }
+
+    @Test
+    void shouldReturnTrue_andAddElementAtStartOfTheDeque() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        var offered = myDeque.offerFirst("d");
+
+        //then
+        assertEquals(4, myDeque.size());
+        assertEquals("d", myDeque.peekFirst());
+        assertTrue(offered);
+    }
+
+    @Test
+    void shouldReturnTrue_andAddElementAtEndOfTheDeque() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        var offered = myDeque.offerLast("d");
+
+        //then
+        assertEquals(4, myDeque.size());
+        assertEquals("d", myDeque.peekLast());
+        assertTrue(offered);
+    }
+
+    @Test
+    void shouldReturnElement_andRemoveElementAtStartOfTheDeque() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        var removed = myDeque.removeFirst();
+
+        //then
+        assertEquals(2, myDeque.size());
+        assertEquals("b", myDeque.peekFirst());
+        assertEquals("a", removed);
+    }
+
+    @Test
+    void removingFirstShouldThrowException_whenDequeIsEmpty() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+
+        //then
+        assertThrows(NoSuchElementException.class, myDeque::removeFirst);
+    }
+
+    @Test
+    void shouldReturnElement_andRemoveElementAtEndOfTheDeque() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        var removed = myDeque.removeLast();
+
+        //then
+        assertEquals(2, myDeque.size());
+        assertEquals("b", myDeque.peekLast());
+        assertEquals("c", removed);
+    }
+
+    @Test
+    void removingLastShouldThrowException_whenDequeIsEmpty() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+
+        //then
+        assertThrows(NoSuchElementException.class, myDeque::removeLast);
+    }
+
+    @Test
+    void pollFirst_shouldReturnElement_andRemoveElementAtStartOfTheDeque() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        var polled = myDeque.pollFirst();
+
+        //then
+        assertEquals(2, myDeque.size());
+        assertEquals("b", myDeque.peekFirst());
+        assertEquals("a", polled);
+    }
+
+    @Test
+    void pollingFirstShouldReturnNull_whenDequeIsEmpty() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+
+        //when
+        var polled = myDeque.pollFirst();
+
+        //then
+        assertNull(polled);
+    }
+
+    @Test
+    void pollLast_shouldReturnElement_andRemoveElementAtEndOfTheDeque() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        var polled = myDeque.pollLast();
+
+        //then
+        assertEquals(2, myDeque.size());
+        assertEquals("b", myDeque.peekLast());
+        assertEquals("c", polled);
+    }
+
+    @Test
+    void pollingLastShouldReturnNull_whenDequeIsEmpty() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+
+        //when
+        var polled = myDeque.pollLast();
+
+        //then
+        assertNull(polled);
+    }
+
+    @Test
+    void getFirst_shouldReturnFirstElement() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        String result = myDeque.getFirst();
+
+        //then
+        assertEquals(3, myDeque.size());
+        assertEquals("a", result);
+    }
+
+    @Test
+    void getFirst_shouldThrowException_whenDequeIsEmpty() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+
+        //then
+        assertThrows(NoSuchElementException.class, myDeque::getFirst);
+    }
+
+    @Test
+    void getLast_shouldReturnLastElement() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        String result = myDeque.getLast();
+
+        //then
+        assertEquals(3, myDeque.size());
+        assertEquals("c", result);
+    }
+
+    @Test
+    void getLast_shouldThrowException_whenDequeIsEmpty() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+
+        //then
+        assertThrows(NoSuchElementException.class, myDeque::getLast);
+    }
+
+    @Test
+    void peekFirst_shouldReturnFirstElement() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        String peeked = myDeque.peekFirst();
+
+        //then
+        assertEquals(3, myDeque.size());
+        assertEquals("a", peeked);
+    }
+
+    @Test
+    void peekFirst_shouldReturnNull_whenDequeIsEmpty() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+
+        //when
+        String peeked = myDeque.peekFirst();
+
+        //then
+        assertNull(peeked);
+    }
+
+    @Test
+    void peekLast_shouldReturnLastElement() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+        myDeque.add("a");
+        myDeque.add("b");
+        myDeque.add("c");
+
+        //when
+        String peeked = myDeque.peekLast();
+
+        //then
+        assertEquals(3, myDeque.size());
+        assertEquals("c", peeked);
+    }
+
+    @Test
+    void peekLast_shouldReturnNull_whenDequeIsEmpty() {
+        //given
+        MyDeque<String> myDeque = new MyLinkedList<>();
+
+        //when
+        String peeked = myDeque.peekLast();
+
+        //then
+        assertNull(peeked);
+    }
 }
