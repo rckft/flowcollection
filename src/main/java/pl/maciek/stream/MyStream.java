@@ -2,6 +2,7 @@ package pl.maciek.stream;
 
 import pl.maciek.collection.list.MyArrayList;
 import pl.maciek.collection.list.MyList;
+import pl.maciek.stream.sorters.MergeSorter;
 
 import java.util.Optional;
 
@@ -78,7 +79,7 @@ public class MyStream<T> {
     public MyStream<T> sorted(MyComparator<T> comparator) {
         var result = new MyArrayList<T>();
         copyElements(result);
-        return new MyStream<>(mergeSort(result, comparator));
+        return new MyStream<>(new MergeSorter<>(result, comparator).sort());
     }
 
     public Optional<T> findFirst() {
@@ -171,75 +172,7 @@ public class MyStream<T> {
         }
     }
 
-    private MyList<T> bubbleSort(MyList<T> list, MyComparator<T> comparator) {
-        for (int i = elements.size() - 1; i > 0; i--) {
-            boolean noChange = true;
-            for (int j = 0; j < i; j++) {
-                var lhs = list.get(j);
-                var rhs = list.get(j + 1);
-                var compareResult = comparator.compare(lhs, rhs);
-                if (compareResult > 0) {
-                    noChange = false;
-                    list.set(j + 1, lhs);
-                    list.set(j, rhs);
-                }
-            }
-            if (noChange) break;
-        }
-        return list;
-    }
 
-    private MyList<T> mergeSort(MyList<T> list, MyComparator<T> comparator) {
-        if (list.size() < 2) {
-            return list;
-        }
-
-        int middleIndex = list.size() / 2;
-        MyList<T> leftPartSorted = mergeSort(split(list, 0, middleIndex), comparator);
-        MyList<T> rightPartSorted = mergeSort(split(list, middleIndex, list.size()), comparator);
-
-        var result = new MyArrayList<T>();
-
-        var i = 0;
-        var j = 0;
-
-        while (result.size() < list.size()) {
-
-            if (i == leftPartSorted.size()) {
-                while (j < rightPartSorted.size()) {
-                    result.add(rightPartSorted.get(j));
-                    j++;
-                }
-                break;
-            }
-
-            if (j == rightPartSorted.size()) {
-                while (i < leftPartSorted.size()) {
-                    result.add(leftPartSorted.get(i));
-                    i++;
-                }
-                break;
-            }
-
-            if (comparator.compare(leftPartSorted.get(i), rightPartSorted.get(j)) > 0) {
-                result.add(rightPartSorted.get(j));
-                j++;
-            } else {
-                result.add(leftPartSorted.get(i));
-                i++;
-            }
-        }
-
-        return result;
-    }
-
-    private MyList<T> split(MyList<T> target, int start, int end) {
-        var result = new MyArrayList<>();
-        for (int i = start; i < end; i++) {
-            result.add(target.get(i));
-        }
-        return (MyList<T>) result;
-    }
 
 
 }
